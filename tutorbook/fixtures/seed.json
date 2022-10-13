@@ -1,0 +1,16 @@
+[
+  {
+    "model": "tutorbook.user_type",
+    "pk": 1,
+    "fields": {
+      "type_name": "D"
+    }
+  },
+  {
+    "model": "tutorbook.user_type",
+    "pk": 2,
+    "fields": {
+      "type_name": "T"
+    }
+  }
+]

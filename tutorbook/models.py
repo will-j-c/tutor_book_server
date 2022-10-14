@@ -1,4 +1,5 @@
 from email.message import Message
+from enum import unique
 from django.db import models
 import uuid
 
@@ -10,8 +11,7 @@ from static_data import create_choices
 
 
 class User_Type(models.Model):
-    type_choices = [('D', 'Default'), ('T', 'Tutor')]
-    type_name = models.CharField(max_length=1, choices=type_choices)
+    type_name = models.CharField(max_length=10, unique=True)
 
     def __str__(self):
         return self.type_name

@@ -2,7 +2,10 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+"""
+Adds the static_data to the sys path
+"""
+sys.path.insert(1, '/mnt/c/Users/willi/Code/GAProjects/tutorbook_server/tutorbook/static_data')
 
 def main():
     """Run administrative tasks."""

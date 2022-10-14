@@ -1,9 +1,6 @@
 import csv
 from pathlib import Path
 
-import sys
-print(sys.path)
-
 def create_choices(filename):
     filepath = Path(__file__).parent/f'{filename}'
     choices = []

@@ -36,6 +36,7 @@ def generate_about_me_text(int):
         text = f'{text}/n{para}'
     return text
 
+
 def generate_random_email(first_name, last_name):
     domains = ['hotmail.com', 'gmail.com', 'aol.com',
                'mail.com', 'mail.kz', 'yahoo.com']
@@ -102,6 +103,7 @@ def create_tutor_record(pk, user_id):
     }
     return record_dict
 
+
 def create_assignment_record(pk, user_id):
     is_published = random.choice([True, False])
     is_filled = False
@@ -127,9 +129,41 @@ def create_assignment_record(pk, user_id):
     }
     return record_dict
 
+
+def create_review_record(pk, tutor_id, user_id):
+    number_of_paragraphs = random.randint(0, 2)
+    record_dict = {
+        'model': 'tutorbook.review',
+        'pk': pk,
+        'fields': {
+            'tutor': tutor_id,
+            'user': user_id,
+            'created_at': str(datetime.datetime.now(datetime.timezone.utc)),
+            'updated_at': str(datetime.datetime.now(datetime.timezone.utc)),
+            'rating': round(random.uniform(0, 5), 1),
+            'review_text': generate_about_me_text(number_of_paragraphs),
+        }
+    }
+    return record_dict
+
+def create_thread_record(pk, tutor_id, user_id):
+    record_dict = {
+        'model': 'tutorbook.thread',
+        'pk': pk,
+        'fields': {
+            'tutor': tutor_id,
+            'user': user_id,
+            'created_at': str(datetime.datetime.now(datetime.timezone.utc)),
+            'has_unread': random.choice([True, False]),
+        }
+    }
+    return record_dict
+
 def main():
-    print('How many records would you like to generate?')
+    print('How many user records would you like to generate?')
     records = int(input())
+    print('How many reviews would you like to generate?')
+    reviews = int(input())
     # Delete the current fixtures
     filelist = glob.glob('tutorbook/fixtures/*.json')
     for file in filelist:
@@ -156,10 +190,12 @@ def main():
     # Create tutors and assignments
     tutor_pk = 1
     assignment_pk = 1
+    created_tutor_objects = []
     for user in created_users_objects:
         if user['fields']['user_type'] == 2:
             record = create_tutor_record(tutor_pk, user['pk'])
             json_objects.append(record)
+            created_tutor_objects.append(record)
             tutor_pk += 1
         if user['fields']['user_type'] == 1:
             posted_assignment = random.choice([True, False])
@@ -167,6 +203,35 @@ def main():
                 record = create_assignment_record(assignment_pk, user['pk'])
                 json_objects.append(record)
                 assignment_pk += 1
+    # Create default user and tutor user pairs
+    tutor_user_pairs = []
+    for review in range(reviews):
+        tutor_list = []
+        user_list = []
+        for user in created_users_objects:
+            if user['fields']['user_type'] == 2:
+                for tutor in created_tutor_objects:
+                    if user['pk'] == tutor['fields']['user']:
+                        tutor_list.append(tutor['pk'])
+            if user['fields']['user_type'] == 1:
+                user_list.append(user['pk'])
+        tutor_user_pairs.append(
+            [random.choice(tutor_list), random.choice(user_list)])
+
+    # Create reviews based on pairs
+    review_pk = 1
+    for pair in tutor_user_pairs:
+        record = create_review_record(review_pk, pair[0], pair[1])
+        json_objects.append(record)
+        review_pk += 1
+
+    # Create threads and messages based on user pairs
+    thread_pk = 1
+    for pair in tutor_user_pairs:
+        number_of_messages = random.randint(0, 20)
+        record = create_thread_record(thread_pk, pair[0], pair[1])
+        json_objects.append(record)
+        thread_pk += 1
 
     # Write everything to a json file
     with open('tutorbook/fixtures/seed_data.json', 'w') as file:

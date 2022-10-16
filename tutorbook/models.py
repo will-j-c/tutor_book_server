@@ -20,7 +20,8 @@ class User(models.Model):
     user_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    profile_img_url = models.URLField(default='https://i.stack.imgur.com/l60Hf.png')
+    profile_img_url = models.URLField(
+        default='https://i.stack.imgur.com/l60Hf.png')
 
     def __str__(self):
         return str(self.user_uuid)
@@ -83,24 +84,35 @@ class Review(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
-    rating = models.DecimalField(max_digits=2, decimal_places=1, validators=[DecimalValidator(2, 1)])
-    
+    rating = models.DecimalField(max_digits=2, decimal_places=1, validators=[
+                                 DecimalValidator(2, 1)])
+
     def __str__(self):
         return self.pk
+
 
 class Thread(models.Model):
-    user_one = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_one')
-    user_two = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_two')
+    user_one = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='user_one')
+    user_two = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='user_two')
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     thread_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    has_unread = models.BooleanField(default=True)
+
     def __str__(self):
         return self.pk
 
+
 class Message(models.Model):
-    sender_id = models.ForeignKey(User, on_delete=models.PROTECT, related_name='sender_id')
-    receiver_id = models.ForeignKey(User, on_delete=models.PROTECT, related_name='receiver_id')
+    sender_id = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='sender_id')
+    receiver_id = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='receiver_id')
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     thread_id = models.ForeignKey(Thread, on_delete=models.CASCADE)
     content = models.TextField()
+    is_read = models.BooleanField(default=False)
+
     def __str__(self):
         return self.pk

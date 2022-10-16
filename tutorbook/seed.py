@@ -159,6 +159,22 @@ def create_thread_record(pk, tutor_id, user_id):
     }
     return record_dict
 
+def create_message_record(pk, tutor_id, user_id, thread_id):
+    record_dict = {
+        'model': 'tutorbook.message',
+        'pk': pk,
+        'fields': {
+            'tutor': tutor_id,
+            'user': user_id,
+            'tutor_is_sender': random.choice([True, False]),
+            'created_at': str(datetime.datetime.now(datetime.timezone.utc)),
+            'thread_id': thread_id,
+            'content': lorem.sentence(),
+            'is_read': random.choice([True, False]),
+        }
+    }
+    return record_dict
+
 def main():
     print('How many user records would you like to generate?')
     records = int(input())
@@ -227,10 +243,15 @@ def main():
 
     # Create threads and messages based on user pairs
     thread_pk = 1
+    message_pk = 1
     for pair in tutor_user_pairs:
         number_of_messages = random.randint(0, 20)
         record = create_thread_record(thread_pk, pair[0], pair[1])
         json_objects.append(record)
+        for message in range(number_of_messages):
+            record = create_message_record(message_pk, pair[0], pair[1], thread_pk)
+            json_objects.append(record)
+            message_pk += 1
         thread_pk += 1
 
     # Write everything to a json file

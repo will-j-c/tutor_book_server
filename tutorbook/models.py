@@ -106,10 +106,11 @@ class Thread(models.Model):
 
 
 class Message(models.Model):
-    sender_id = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name='sender_id')
-    receiver_id = models.ForeignKey(
+    tutor = models.ForeignKey(
+        Tutor, on_delete=models.PROTECT, related_name='sender_id')
+    user = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name='receiver_id')
+    tutor_is_sender = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     thread_id = models.ForeignKey(Thread, on_delete=models.CASCADE)
     content = models.TextField()

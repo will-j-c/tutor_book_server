@@ -66,13 +66,13 @@ class Tutor(models.Model):
 
 
 class Assignment(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     published = models.BooleanField(default=False)
     published_at = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     filled = models.BooleanField(default=False)
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=250)
     description = models.TextField()
 
     def __str__(self):

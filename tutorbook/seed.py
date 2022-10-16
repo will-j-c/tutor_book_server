@@ -36,7 +36,6 @@ def generate_about_me_text(int):
         text = f'{text}/n{para}'
     return text
 
-
 def generate_random_email(first_name, last_name):
     domains = ['hotmail.com', 'gmail.com', 'aol.com',
                'mail.com', 'mail.kz', 'yahoo.com']
@@ -95,7 +94,7 @@ def create_tutor_record(pk, user_id):
             'updated_at': str(datetime.datetime.now(datetime.timezone.utc)),
             'published_at': published_at,
             'subscription_expires_at': subscription_expires_at,
-            'user': str(user_id),
+            'user': user_id,
             'locations': locations_covered,
             'levels': levels_covered,
             'subjects': subjects_covered,
@@ -103,6 +102,30 @@ def create_tutor_record(pk, user_id):
     }
     return record_dict
 
+def create_assignment_record(pk, user_id):
+    is_published = random.choice([True, False])
+    is_filled = False
+    published_at = None
+    number_of_paragraphs = random.randint(1, 3)
+    if is_published:
+        published_at = str(datetime.datetime.now(datetime.timezone.utc))
+        is_filled = random.choice([True, False])
+
+    record_dict = {
+        'model': 'tutorbook.assignment',
+        'pk': pk,
+        'fields': {
+            'published': is_published,
+            'title': lorem.sentence(),
+            'filled': is_filled,
+            'created_at': str(datetime.datetime.now(datetime.timezone.utc)),
+            'updated_at': str(datetime.datetime.now(datetime.timezone.utc)),
+            'published_at': published_at,
+            'description': generate_about_me_text(number_of_paragraphs),
+            'user': user_id,
+        }
+    }
+    return record_dict
 
 def main():
     print('How many records would you like to generate?')
@@ -112,10 +135,15 @@ def main():
     for file in filelist:
         os.remove(file)
     # Clear the old tables in the database
-    cursor.execute('''DELETE FROM tutorbook_user;''')
+    cursor.execute('''DELETE FROM tutorbook_tutor_levels;''')
+    cursor.execute('''DELETE FROM tutorbook_tutor_locations;''')
+    cursor.execute('''DELETE FROM tutorbook_tutor_subjects;''')
+    cursor.execute('''DELETE FROM tutorbook_tutor;''')
+    cursor.execute('''DELETE FROM tutorbook_message;''')
     cursor.execute('''DELETE FROM tutorbook_thread;''')
     cursor.execute('''DELETE FROM tutorbook_review;''')
     cursor.execute('''DELETE FROM tutorbook_assignment;''')
+    cursor.execute('''DELETE FROM tutorbook_user;''')
     connection.commit()
     connection.close()
     # Create the user_seed.json files
@@ -127,10 +155,18 @@ def main():
         created_users_objects.append(record)
     # Create tutors and assignments
     tutor_pk = 1
+    assignment_pk = 1
     for user in created_users_objects:
         if user['fields']['user_type'] == 2:
             record = create_tutor_record(tutor_pk, user['pk'])
             json_objects.append(record)
+            tutor_pk += 1
+        if user['fields']['user_type'] == 1:
+            posted_assignment = random.choice([True, False])
+            if posted_assignment:
+                record = create_assignment_record(assignment_pk, user['pk'])
+                json_objects.append(record)
+                assignment_pk += 1
 
     # Write everything to a json file
     with open('tutorbook/fixtures/seed_data.json', 'w') as file:

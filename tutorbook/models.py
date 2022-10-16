@@ -1,17 +1,12 @@
-from email.message import Message
 from django.db import models
 import uuid
-
-from django.forms import NumberInput
 from django.core.validators import DecimalValidator
-from static_data import create_choices
 
 # Create your models here.
 
 
 class User_Type(models.Model):
-    type_choices = [('D', 'Default'), ('T', 'Tutor')]
-    type_name = models.CharField(max_length=1, choices=type_choices)
+    type_name = models.CharField(max_length=10, unique=True)
 
     def __str__(self):
         return self.type_name
@@ -21,13 +16,15 @@ class User(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
-    user_type_id = models.ForeignKey(User_Type, on_delete=models.PROTECT)
+    user_type = models.ForeignKey(User_Type, on_delete=models.PROTECT)
     user_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    profile_img_url = models.URLField(
+        default='https://i.stack.imgur.com/l60Hf.png')
 
     def __str__(self):
-        return self.user_uuid
+        return str(self.user_uuid)
 
 
 class Location(models.Model):
@@ -52,28 +49,28 @@ class Level(models.Model):
 
 
 class Tutor(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     published = models.BooleanField(default=False)
     looking_for_assignment = models.BooleanField(default=False)
-    about_me = models.TextField()
+    about_me = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    updated_at = models.DateTimeField(auto_now=True)
-    published_at = models.DateTimeField()
-    subscription_expires_at = models.DateTimeField()
-    location = models.ManyToManyField(Location)
-    level = models.ManyToManyField(Level)
-    subject = models.ManyToManyField(Subject)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    published_at = models.DateTimeField(null=True)
+    subscription_expires_at = models.DateTimeField(null=True)
+    locations = models.ManyToManyField(Location)
+    levels = models.ManyToManyField(Level)
+    subjects = models.ManyToManyField(Subject)
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
 
 class Assignment(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     published = models.BooleanField(default=False)
-    published_at = models.DateTimeField()
+    published_at = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     filled = models.BooleanField(default=False)
     title = models.CharField(max_length=50)
     description = models.TextField()
@@ -87,24 +84,35 @@ class Review(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
-    rating = models.DecimalField(max_digits=2, decimal_places=1, validators=[DecimalValidator(2, 1)])
+    rating = models.DecimalField(max_digits=2, decimal_places=1, validators=[
+                                 DecimalValidator(2, 1)])
 
     def __str__(self):
         return self.pk
+
 
 class Thread(models.Model):
-    user_one = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_one')
-    user_two = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_two')
+    user_one = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='user_one')
+    user_two = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='user_two')
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     thread_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    has_unread = models.BooleanField(default=True)
+
     def __str__(self):
         return self.pk
 
+
 class Message(models.Model):
-    sender_id = models.ForeignKey(User, on_delete=models.PROTECT, related_name='sender_id')
-    receiver_id = models.ForeignKey(User, on_delete=models.PROTECT, related_name='receiver_id')
+    sender_id = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='sender_id')
+    receiver_id = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='receiver_id')
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     thread_id = models.ForeignKey(Thread, on_delete=models.CASCADE)
     content = models.TextField()
+    is_read = models.BooleanField(default=False)
+
     def __str__(self):
         return self.pk

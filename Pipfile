@@ -7,8 +7,13 @@ name = "pypi"
 django = "*"
 psycopg2-binary = "*"
 django-environ = "*"
+djangorestframework = "*"
 
 [dev-packages]
+names = "*"
+lorem = "*"
+django-extensions = "*"
+werkzeug = "*"
 
 [requires]
 python_version = "3.8"

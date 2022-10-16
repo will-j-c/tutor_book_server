@@ -66,13 +66,13 @@ class Tutor(models.Model):
 
 
 class Assignment(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     published = models.BooleanField(default=False)
     published_at = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     filled = models.BooleanField(default=False)
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=250)
     description = models.TextField()
 
     def __str__(self):
@@ -80,22 +80,23 @@ class Assignment(models.Model):
 
 
 class Review(models.Model):
-    tutor_id = models.ForeignKey(Tutor, on_delete=models.PROTECT)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    tutor = models.ForeignKey(Tutor, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
     rating = models.DecimalField(max_digits=2, decimal_places=1, validators=[
                                  DecimalValidator(2, 1)])
+    review_text = models.TextField(null=True)
 
     def __str__(self):
         return self.pk
 
 
 class Thread(models.Model):
-    user_one = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name='user_one')
-    user_two = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name='user_two')
+    tutor = models.ForeignKey(
+        Tutor, on_delete=models.PROTECT)
+    user = models.ForeignKey(
+        User, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     thread_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     has_unread = models.BooleanField(default=True)
@@ -105,10 +106,11 @@ class Thread(models.Model):
 
 
 class Message(models.Model):
-    sender_id = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name='sender_id')
-    receiver_id = models.ForeignKey(
+    tutor = models.ForeignKey(
+        Tutor, on_delete=models.PROTECT, related_name='sender_id')
+    user = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name='receiver_id')
+    tutor_is_sender = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     thread_id = models.ForeignKey(Thread, on_delete=models.CASCADE)
     content = models.TextField()

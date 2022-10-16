@@ -57,9 +57,9 @@ class Tutor(models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=True)
     published_at = models.DateTimeField(null=True)
     subscription_expires_at = models.DateTimeField(null=True)
-    location = models.ManyToManyField(Location)
-    level = models.ManyToManyField(Level)
-    subject = models.ManyToManyField(Subject)
+    locations = models.ManyToManyField(Location)
+    levels = models.ManyToManyField(Level)
+    subjects = models.ManyToManyField(Subject)
 
     def __str__(self):
         return str(self.pk)

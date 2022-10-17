@@ -80,10 +80,10 @@ def create_tutor_record(pk, user_id):
             datetime.timezone.utc) + relativedelta(years=1))
 
     locations_covered = random.choices(
-        locations, k=random.randint(1, len(locations)))
+        locations, k=random.randint(1, 5))
     subjects_covered = random.choices(
-        subjects, k=random.randint(1, len(subjects)))
-    levels_covered = random.choices(levels, k=random.randint(1, len(levels)))
+        subjects, k=random.randint(1, 5))
+    levels_covered = random.choices(levels, k=random.randint(1, 5))
     record_dict = {
         'model': 'tutorbook.tutor',
         'pk': pk,

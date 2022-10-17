@@ -1,6 +1,7 @@
-from .models import User
+from .models import User, Tutor
 from rest_framework import generics
-from .serializers import UserSerializer
+from rest_framework.viewsets import ModelViewSet
+from .serializers import UserSerializer, TutorSerializer
 
 class UserList(generics.ListAPIView):
     """
@@ -15,3 +16,13 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    lookup_field = 'user_uuid'
+
+class TutorList(generics.ListAPIView):
+    queryset = Tutor.objects.all()
+    serializer_class = TutorSerializer
+
+class TutorDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Tutor.objects.all()
+    serializer_class = TutorSerializer
+    lookup_field = 'tutor_uuid'

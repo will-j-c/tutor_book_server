@@ -8,4 +8,4 @@ for class_tuple in class_list:
     try: 
         admin.site.register(class_tuple[1]) 
     except:
-        print(Exception)
+        pass

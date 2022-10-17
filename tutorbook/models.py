@@ -60,6 +60,7 @@ class Tutor(models.Model):
     locations = models.ManyToManyField(Location)
     levels = models.ManyToManyField(Level)
     subjects = models.ManyToManyField(Subject)
+    tutor_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return str(self.pk)
@@ -74,6 +75,7 @@ class Assignment(models.Model):
     filled = models.BooleanField(default=False)
     title = models.CharField(max_length=250)
     description = models.TextField()
+    assignment_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.title

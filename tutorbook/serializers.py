@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import *
 
-
 class UserTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_Type
@@ -43,17 +42,27 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'user_type',
+            'email',
             'user_uuid',
             'created_at',
             'updated_at',
             'profile_img_url',
         ]
 
+class SkinnyUserSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = [
+                'first_name',
+                'profile_img_url',
+            ]
+
 class TutorSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = SkinnyUserSerializer(read_only=True)
     locations = LocationSerializer(read_only=True, many=True)
     levels = LevelSerializer(read_only=True, many=True)
     subjects = SubjectSerializer(read_only=True, many=True)
+
     class Meta:
         model = Tutor
         fields = [

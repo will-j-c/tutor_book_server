@@ -76,5 +76,6 @@ class TutorSerializer(serializers.ModelSerializer):
             'subscription_expires_at',
             'locations',
             'levels',
-            'subjects'
+            'subjects',
+            'tutor_uuid',
         ]

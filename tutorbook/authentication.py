@@ -1,3 +1,4 @@
+from pickle import decode_long
 import environ
 import json
 from rest_framework import authentication
@@ -37,7 +38,8 @@ class FirebaseAuthentication(authentication.BaseAuthentication):
         decoded_token = None
         try:
             decoded_token = auth.verify_id_token(id_token)
-        except Exception:
+        except Exception as error:
+            print(error)
             raise InvalidAuthToken()
         if not id_token or not decoded_token:
             return None

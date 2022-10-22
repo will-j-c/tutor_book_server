@@ -8,6 +8,8 @@ class UserList(generics.CreateAPIView):
     """
     A simple view set to retrieve all users
     """
+    authentication_classes = []
+    permission_classes = []
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -22,10 +24,13 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'user_uuid'
 
 class TutorList(generics.ListAPIView):
+    authentication_classes = []
+    permission_classes = []
     queryset = Tutor.objects.all()
     serializer_class = TutorSerializer
 
-class TutorDetail(generics.RetrieveUpdateDestroyAPIView):
+class TutorDetail(generics.RetrieveAPIView):
+    permission_classes = []
     queryset = Tutor.objects.all()
     serializer_class = TutorSerializer
     lookup_field = 'tutor_uuid'

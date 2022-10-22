@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.viewsets import ModelViewSet
 from .serializers import UserSerializer, TutorSerializer
 
-class UserList(generics.ListAPIView):
+class UserList(generics.CreateAPIView):
     """
     A simple view set to retrieve all users
     """

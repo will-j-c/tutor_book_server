@@ -34,19 +34,19 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    user_type = UserTypeSerializer(read_only=True)
-
     class Meta:
         model = User
         fields = [
             'first_name',
             'last_name',
             'user_type',
+            'user_type',
             'email',
             'user_uuid',
             'created_at',
             'updated_at',
             'profile_img_url',
+            'email_is_verified',
         ]
 
 class SkinnyUserSerializer(serializers.ModelSerializer):

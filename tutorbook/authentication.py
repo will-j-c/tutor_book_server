@@ -30,7 +30,6 @@ class FirebaseAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
         # Ensure that an authentication token is present
         auth_header = request.META.get('HTTP_AUTHORIZATION')
-        print(auth_header)
         if not auth_header:
             raise NoAuthToken()
         # Verify the token using the verify_id_token function
@@ -40,7 +39,6 @@ class FirebaseAuthentication(authentication.BaseAuthentication):
             decoded_token = auth.verify_id_token(id_token)
         except Exception:
             raise InvalidAuthToken()
-        print(decoded_token)
         if not id_token or not decoded_token:
             return None
         # Get user
@@ -50,5 +48,4 @@ class FirebaseAuthentication(authentication.BaseAuthentication):
             raise FirebaseError()
         # Return user
         user = User.objects.get(email=email)
-        print(user)
         return (user, None)

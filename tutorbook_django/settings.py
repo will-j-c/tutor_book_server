@@ -142,6 +142,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'tutorbook.authentication.FirebaseAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'tutorbook.permissions.IsOwner',
+    ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 12,
 }

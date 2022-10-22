@@ -1,7 +1,7 @@
 from .models import User, Tutor
 from rest_framework import generics
-from rest_framework.viewsets import ModelViewSet
 from .serializers import UserSerializer, TutorSerializer
+from .authentication import FirebaseAuthentication
 
 class UserList(generics.CreateAPIView):
     """
@@ -14,6 +14,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     A simple view to retrieve, update or delete a user
     """
+    authentication_classes = [FirebaseAuthentication]
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'user_uuid'

@@ -1,6 +1,6 @@
 from .models import Review, User, Tutor, Assignment, Thread, Message
-from rest_framework import generics, views
-from .serializers import UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer
+from rest_framework import generics, views, status
+from .serializers import UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer, ThreadSerializer
 from .authentication import FirebaseAuthentication
 from .permissions import IsOwner
 from rest_framework.response import Response
@@ -82,9 +82,12 @@ class NewThread(views.APIView):
     permission_classes = []
     def post(self, request):
        data = request.data
+       print(data['user'])
        user = User.objects.get(pk = data['user'])
        tutor = Tutor.objects.get(pk = data['tutor'])
        thread = Thread(tutor = tutor, user = user)
        thread.save()
-       message = Message(tutor = tutor, user = user, thread_id = thread, content = data.content)
-       return Response('hello') 
+       message = Message(tutor = tutor, user = user, thread = thread, content = data['content'], sender = data['sender'])
+       message.save()
+       serialized_thread = ThreadSerializer(thread)
+       return Response(status = status.HTTP_201_CREATED, data = serialized_thread.data) 

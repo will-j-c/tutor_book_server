@@ -107,3 +107,30 @@ class AssignmentSerializer(serializers.ModelSerializer):
             'description',
             'assignment_uuid',
         ]
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = [
+            'tutor',
+            'user',
+            'sender',
+            'created_at',
+            'thread',
+            'content',
+            'is_read',
+        ]
+
+class ThreadSerializer(serializers.ModelSerializer):
+    messages = MessageSerializer(source='message_set', many=True)
+    class Meta:
+        model = Thread
+        fields = [
+            'id',
+            'tutor',
+            'user',
+            'created_at',
+            'has_unread',
+            'thread_uuid',
+            'messages'
+        ]

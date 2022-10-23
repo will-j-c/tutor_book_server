@@ -92,3 +92,18 @@ class ReviewSerializer(serializers.ModelSerializer):
             'rating',
             'review_text'
         ]
+
+class AssignmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assignment
+        fields = [
+            'user',
+            'published',
+            'published_at',
+            'created_at',
+            'updated_at',
+            'filled',
+            'title',
+            'description',
+            'assignment_uuid',
+        ]

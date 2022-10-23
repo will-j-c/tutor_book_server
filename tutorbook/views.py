@@ -1,22 +1,16 @@
-from .models import Review, User, Tutor
+from .models import Review, User, Tutor, Assignment
 from rest_framework import generics
-from .serializers import UserSerializer, TutorSerializer, ReviewSerializer
+from .serializers import UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer
 from .authentication import FirebaseAuthentication
 from .permissions import IsOwner
 
 class UserCreate(generics.CreateAPIView):
-    """
-    A simple view set to retrieve all users
-    """
     authentication_classes = []
     permission_classes = []
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    A simple view to retrieve, update or delete a user
-    """
     authentication_classes = [FirebaseAuthentication]
     permission_classes = [IsOwner]
     queryset = User.objects.all()
@@ -26,7 +20,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 class TutorList(generics.ListAPIView):
     authentication_classes = []
     permission_classes = []
-    queryset = Tutor.objects.all()
+    queryset = Tutor.objects.filter(published = True)
     serializer_class = TutorSerializer
 
 class TutorDetail(generics.RetrieveAPIView):
@@ -38,10 +32,29 @@ class TutorDetail(generics.RetrieveAPIView):
 class ReviewList(generics.ListAPIView):
     permission_classes = []
     serializer_class = ReviewSerializer
-    # queryset = Review.objects.all()
     def get_queryset(self):
         tutor_uuid = self.kwargs['tutor_uuid']
-        print(tutor_uuid)
         tutor = Tutor.objects.filter(tutor_uuid = tutor_uuid).values()[0]
-        print(tutor)
         return Review.objects.filter(tutor = tutor['id'])
+
+class AssignmentList(generics.ListAPIView):
+    authentication_classes = []
+    permission_classes = []
+    queryset = Assignment.objects.filter(published = True)
+    serializer_class = AssignmentSerializer
+
+class AssignmentCreate(generics.CreateAPIView):
+    authentication_classes = []
+    queryset = Assignment.objects.all()
+    serializer_class = AssignmentSerializer
+
+class AssignmentDetail(generics.RetrieveAPIView):
+    permission_classes = []
+    queryset = Assignment.objects.all()
+    serializer_class = AssignmentSerializer
+    lookup_field = 'assignment_uuid'
+
+class AssignmentUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Assignment.objects.all()
+    serializer_class = AssignmentSerializer
+    lookup_field = 'assignment_uuid'

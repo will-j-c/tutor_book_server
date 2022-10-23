@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from django.core.validators import DecimalValidator
+from django.db.models import Avg
 
 # Create your models here.
 
@@ -72,9 +73,13 @@ class Tutor(models.Model):
     levels = models.ManyToManyField(Level)
     subjects = models.ManyToManyField(Subject)
     tutor_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    
+    @property
+    def average_rating(self):
+        return Review.objects.filter(tutor = self).aggregate(Avg('rating'))
 
     def __str__(self):
-        return str(self.pk)
+        return str(self.tutor_uuid)
 
 
 class Assignment(models.Model):

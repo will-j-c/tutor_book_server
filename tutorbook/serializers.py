@@ -78,4 +78,5 @@ class TutorSerializer(serializers.ModelSerializer):
             'levels',
             'subjects',
             'tutor_uuid',
+            'average_rating'
         ]

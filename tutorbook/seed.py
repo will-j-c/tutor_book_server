@@ -41,7 +41,8 @@ def generate_random_email(first_name, last_name):
     domains = ['hotmail.com', 'gmail.com', 'aol.com',
                'mail.com', 'mail.kz', 'yahoo.com']
     random_domain = random.choice(domains)
-    return f'{first_name}.{last_name}@{random_domain}'
+    random_salt = random.randint(1, 20000)
+    return f'{first_name}.{last_name}{random_salt}@{random_domain}'
 
 
 def generate_placeholder_avatar():
@@ -166,7 +167,7 @@ def create_message_record(pk, tutor_id, user_id, thread_id):
         'fields': {
             'tutor': tutor_id,
             'user': user_id,
-            'tutor_is_sender': random.choice([True, False]),
+            'sender': random.choice(['u', 't']),
             'created_at': str(datetime.datetime.now(datetime.timezone.utc)),
             'thread_id': thread_id,
             'content': lorem.sentence(),

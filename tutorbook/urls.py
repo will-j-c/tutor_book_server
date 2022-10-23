@@ -1,11 +1,11 @@
 from django.db import router
 from django.urls import path
-from .views import UserDetail, UserCreate, TutorList, TutorDetail, ReviewList, AssignmentList, AssignmentCreate, AssignmentDetail, AssignmentUpdateDestroy, ReviewCreate, ReviewUpdateDestroy
+from .views import UserDetail, UserCreate, TutorList, TutorDetail, ReviewList, AssignmentList, AssignmentCreate, AssignmentDetail, AssignmentUpdateDestroy, ReviewCreate, ReviewUpdateDestroy, NewThread
 
 urlpatterns = [
-    path('users/', UserCreate.as_view(), name='user_list'),
+    path('users', UserCreate.as_view(), name='user_list'),
     path('users/<uuid:user_uuid>', UserDetail.as_view(), name='user_detail'),
-    path('tutors/', TutorList.as_view(), name='tutor_list'),
+    path('tutors', TutorList.as_view(), name='tutor_list'),
     path('tutors/<uuid:tutor_uuid>', TutorDetail.as_view(), name='tutor_detail'),
     path('reviews/<uuid:tutor_uuid>',
          ReviewCreate.as_view(), name='review_create'),
@@ -17,4 +17,5 @@ urlpatterns = [
          AssignmentDetail.as_view(), name='assignment_create'),
     path('assignments', AssignmentCreate.as_view(), name='assignment_create'),
     path('assignments', AssignmentList.as_view(), name='assignment_list'),
+    path('messages/new', NewThread.as_view(), name='new_thread'),
 ]

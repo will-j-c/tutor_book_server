@@ -128,9 +128,12 @@ class Message(models.Model):
         Tutor, on_delete=models.PROTECT, related_name='sender_id')
     user = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name='receiver_id')
-    tutor_is_sender = models.BooleanField(default=False)
+    sender = models.CharField(
+        max_length=1,
+        choices=[('t', 'tutor'), ('u', 'User')],
+    )
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    thread_id = models.ForeignKey(Thread, on_delete=models.CASCADE)
+    thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
     content = models.TextField()
     is_read = models.BooleanField(default=False)
 

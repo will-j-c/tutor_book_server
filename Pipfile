@@ -7,8 +7,18 @@ name = "pypi"
 django = "*"
 psycopg2-binary = "*"
 django-environ = "*"
+djangorestframework = "*"
+django-cors-headers = "*"
+firebase-admin = "*"
 
 [dev-packages]
+names = "*"
+lorem = "*"
+django-extensions = "*"
+werkzeug = "*"
+numpy = "*"
+python-dateutil = "*"
+autopep8 = "*"
 
 [requires]
 python_version = "3.8"

@@ -1,10 +1,10 @@
-from .models import User, Tutor
+from .models import Review, User, Tutor
 from rest_framework import generics
-from .serializers import UserSerializer, TutorSerializer
+from .serializers import UserSerializer, TutorSerializer, ReviewSerializer
 from .authentication import FirebaseAuthentication
 from .permissions import IsOwner
 
-class UserList(generics.CreateAPIView):
+class UserCreate(generics.CreateAPIView):
     """
     A simple view set to retrieve all users
     """
@@ -34,3 +34,14 @@ class TutorDetail(generics.RetrieveAPIView):
     queryset = Tutor.objects.all()
     serializer_class = TutorSerializer
     lookup_field = 'tutor_uuid'
+
+class ReviewList(generics.ListAPIView):
+    permission_classes = []
+    serializer_class = ReviewSerializer
+    # queryset = Review.objects.all()
+    def get_queryset(self):
+        tutor_uuid = self.kwargs['tutor_uuid']
+        print(tutor_uuid)
+        tutor = Tutor.objects.filter(tutor_uuid = tutor_uuid).values()[0]
+        print(tutor)
+        return Review.objects.filter(tutor = tutor['id'])

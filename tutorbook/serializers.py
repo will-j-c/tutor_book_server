@@ -80,3 +80,15 @@ class TutorSerializer(serializers.ModelSerializer):
             'tutor_uuid',
             'average_rating'
         ]
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = [
+            'tutor',
+            'user',
+            'created_at',
+            'updated_at',
+            'rating',
+            'review_text'
+        ]

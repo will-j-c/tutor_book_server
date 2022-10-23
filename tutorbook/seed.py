@@ -42,7 +42,9 @@ def generate_random_email(first_name, last_name):
                'mail.com', 'mail.kz', 'yahoo.com']
     random_domain = random.choice(domains)
     random_salt = random.randint(1, 20000)
-    return f'{first_name}.{last_name}{random_salt}@{random_domain}'
+    first_name_lower = first_name.lower()
+    last_name_lower = last_name.lower()
+    return f'{first_name_lower}.{last_name_lower}{random_salt}@{random_domain}'
 
 
 def generate_placeholder_avatar():

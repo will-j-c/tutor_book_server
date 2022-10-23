@@ -75,6 +75,7 @@ class AssignmentUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AssignmentSerializer
     lookup_field = 'assignment_uuid'
 
+# Messages views
 class NewThread(views.APIView):
     """
     Creates a new thread and the message in the thread
@@ -90,4 +91,9 @@ class NewThread(views.APIView):
        message = Message(tutor = tutor, user = user, thread = thread, content = data['content'], sender = data['sender'])
        message.save()
        serialized_thread = ThreadSerializer(thread)
-       return Response(status = status.HTTP_201_CREATED, data = serialized_thread.data) 
+       return Response(status = status.HTTP_201_CREATED, data = serialized_thread.data)
+
+class ThreadDetail(generics.RetrieveAPIView):
+    queryset = Thread.objects.all()
+    serializer_class = ThreadSerializer
+    lookup_field = 'thread_uuid'

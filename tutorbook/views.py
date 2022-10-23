@@ -4,6 +4,7 @@ from .serializers import UserSerializer, TutorSerializer, ReviewSerializer, Assi
 from .authentication import FirebaseAuthentication
 from .permissions import IsOwner
 
+# User views
 class UserCreate(generics.CreateAPIView):
     authentication_classes = []
     permission_classes = []
@@ -17,6 +18,8 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     lookup_field = 'user_uuid'
 
+
+# Tutor views
 class TutorList(generics.ListAPIView):
     authentication_classes = []
     permission_classes = []
@@ -29,6 +32,8 @@ class TutorDetail(generics.RetrieveAPIView):
     serializer_class = TutorSerializer
     lookup_field = 'tutor_uuid'
 
+
+# Review views
 class ReviewList(generics.ListAPIView):
     permission_classes = []
     serializer_class = ReviewSerializer
@@ -37,6 +42,16 @@ class ReviewList(generics.ListAPIView):
         tutor = Tutor.objects.filter(tutor_uuid = tutor_uuid).values()[0]
         return Review.objects.filter(tutor = tutor['id'])
 
+class ReviewCreate(generics.CreateAPIView):
+    permission_classes = []
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+class ReviewUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+# Assignment views
 class AssignmentList(generics.ListAPIView):
     authentication_classes = []
     permission_classes = []

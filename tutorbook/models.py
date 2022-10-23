@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from django.core.validators import DecimalValidator
+from django.db.models import Avg
 
 # Create your models here.
 
@@ -15,16 +16,27 @@ class User_Type(models.Model):
 class User(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
+    email_is_verified = models.BooleanField(default=False)
     user_type = models.ForeignKey(User_Type, on_delete=models.PROTECT)
     user_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    profile_img_url = models.URLField(
-        default='https://i.stack.imgur.com/l60Hf.png')
+    profile_img_url = models.URLField(null=True)
 
     def __str__(self):
         return str(self.user_uuid)
+
+    def save(self, *args, **kwargs):
+        """
+        If the type of user is a tutor, also create a bare bones Tutor entry
+        """
+        if getattr(self, User._meta.get_field('user_type').attname) == 2:
+            super().save(*args, **kwargs)
+            tutor = Tutor.objects.create(user = self)
+            tutor.save()
+            return
+        super().save(*args, **kwargs) 
 
 
 class Location(models.Model):
@@ -61,9 +73,13 @@ class Tutor(models.Model):
     levels = models.ManyToManyField(Level)
     subjects = models.ManyToManyField(Subject)
     tutor_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    
+    @property
+    def average_rating(self):
+        return Review.objects.filter(tutor = self).aggregate(Avg('rating'))
 
     def __str__(self):
-        return str(self.pk)
+        return str(self.tutor_uuid)
 
 
 class Assignment(models.Model):

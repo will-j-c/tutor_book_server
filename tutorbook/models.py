@@ -26,6 +26,17 @@ class User(models.Model):
     def __str__(self):
         return str(self.user_uuid)
 
+    def save(self, *args, **kwargs):
+        """
+        If the type of user is a tutor, also create a bare bones Tutor entry
+        """
+        if getattr(self, User._meta.get_field('user_type').attname) == 2:
+            super().save(*args, **kwargs)
+            tutor = Tutor.objects.create(user = self)
+            tutor.save()
+            return
+        super().save(*args, **kwargs) 
+
 
 class Location(models.Model):
     location_name = models.CharField(max_length=50, unique=True)

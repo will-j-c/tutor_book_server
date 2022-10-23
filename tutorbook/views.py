@@ -1,6 +1,6 @@
 from .models import Review, User, Tutor, Assignment, Thread, Message
 from rest_framework import generics, views, status
-from .serializers import UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer, ThreadSerializer
+from .serializers import UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer, ThreadSerializer, MessageSerializer
 from .authentication import FirebaseAuthentication
 from .permissions import IsOwner
 from rest_framework.response import Response
@@ -97,3 +97,8 @@ class ThreadDetail(generics.RetrieveAPIView):
     queryset = Thread.objects.all()
     serializer_class = ThreadSerializer
     lookup_field = 'thread_uuid'
+
+class MessageCreate(generics.CreateAPIView):
+    authentication_classes = []
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer

@@ -12,10 +12,12 @@ class User_Type(models.Model):
     def __str__(self):
         return self.type_name
 
+
 class LowercaseEmailField(models.EmailField):
     """
     Override EmailField to convert emails to lowercase before saving.
     """
+
     def to_python(self, value):
         """
         Convert email to lowercase.
@@ -25,6 +27,7 @@ class LowercaseEmailField(models.EmailField):
         if isinstance(value, str):
             return value.lower()
         return value
+
 
 class User(models.Model):
     first_name = models.CharField(max_length=50)
@@ -46,10 +49,10 @@ class User(models.Model):
         """
         if getattr(self, User._meta.get_field('user_type').attname) == 2:
             super().save(*args, **kwargs)
-            tutor = Tutor.objects.create(user = self)
+            tutor = Tutor.objects.create(user=self)
             tutor.save()
             return
-        super().save(*args, **kwargs) 
+        super().save(*args, **kwargs)
 
 
 class Location(models.Model):
@@ -86,10 +89,10 @@ class Tutor(models.Model):
     levels = models.ManyToManyField(Level)
     subjects = models.ManyToManyField(Subject)
     tutor_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
-    
+
     @property
     def average_rating(self):
-        return Review.objects.filter(tutor = self).aggregate(Avg('rating'))
+        return Review.objects.filter(tutor=self).aggregate(Avg('rating'))
 
     def __str__(self):
         return str(self.tutor_uuid)
@@ -131,7 +134,7 @@ class Thread(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     thread_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     has_unread = models.BooleanField(default=True)
-    
+
     def __str__(self):
         return self.pk
 

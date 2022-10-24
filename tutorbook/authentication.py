@@ -51,7 +51,6 @@ class FirebaseAuthentication(authentication.BaseAuthentication):
             raise FirebaseError()
         # Return user
         try:
-            print(email) 
             user = User.objects.get(email=email)
         except Exception:
             raise UserDoesNotExistError()

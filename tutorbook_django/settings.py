@@ -146,6 +146,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'tutorbook.permissions.IsOwner',
+        'tutorbook.permissions.IsThreadMember',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 12,
@@ -154,7 +155,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ALLOWED_ORIGINS = [
-    env('CORS_ALLOWED_ORIGINS'),
-]
+CORS_ORIGIN_ALLOW_ALL = env('CORS_ORIGIN_ALLOW_ALL') != 'True'
+# CORS_ALLOWED_ORIGINS = [
+#     env('CORS_ALLOWED_ORIGINS'),
+# ]

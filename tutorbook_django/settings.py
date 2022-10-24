@@ -32,7 +32,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DJANGO_DEBUG') != 'False'
 
 ALLOWED_HOSTS = [
-    "https://tutorbook-app.herokuapp.com"
+    env('ALLOWED_HOSTS')
 ]
 
 

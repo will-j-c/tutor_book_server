@@ -10,11 +10,12 @@ django-environ = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
 firebase-admin = "*"
+gunicorn = "*"
+django-extensions = "*"
 
 [dev-packages]
 names = "*"
 lorem = "*"
-django-extensions = "*"
 werkzeug = "*"
 numpy = "*"
 python-dateutil = "*"

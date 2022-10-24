@@ -1,1 +1,1 @@
-web: gunicorn tutorbook_django.wsgi --log-file -
+web: gunicorn tutorbook_django.wsgi

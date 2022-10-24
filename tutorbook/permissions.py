@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from .models import Tutor
+from .models import Tutor, Thread
 
 class IsOwner(permissions.BasePermission):
     """
@@ -7,42 +7,55 @@ class IsOwner(permissions.BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         has_permission = False
+        print('Checking permission')
         try:
-            tutor = Tutor.objects.get(user_id = request.user.pk)
-            print('tutor.pk', tutor.pk)
-        except:
-            pass
-        print('obj.user_id: ', obj.user_id)
-        print('request.user.pk: ', request.user.pk)
-        print('obj.tutor_id: ', obj.tutor_id)
-        # Test if user_id on the object is the as user_id of the request or that the tutor_id matches the tutor id of the user
-        try:
-            has_permission = obj.user_id == request.user.pk or obj.tutor_id == tutor.pk
+            # Case 1: User wishes to view, update or destroy their own profile
+            print('Checking user object vs request user permission')
+            has_permission = obj.pk == request.user.pk
+            if has_permission:
+                print('User level permission')
+                return has_permission
+        
         except Exception as error:
             print(error)
-            pass
-        # If the object is a user itself, test against the pk
+        
+        try:
+            # Case 2: Tutor or User is trying to send a message, delete a message or retrieve the message thread for viewing.
+            # Need to check if they are a member of the thread. GET methods will be to call the thread. POST and PATCH will be for individual messages
+            if request.method == 'GET':
+                request_user_id = request.user.pk
+                thread_user_id = obj.user_id
+                thread_tutor_id = obj.tutor_id
+                tutor = Tutor.objects.get(pk = thread_tutor_id)
+                has_permission = request_user_id == thread_user_id or request_user_id == tutor.user_id
+                if has_permission:
+                    return has_permission
+
+        except Exception as error:
+            print(error)
+
+        
         return has_permission
 
-class IsMemberOfThreadgit(permissions.BasePermission):
+class IsThreadMember(permissions.BasePermission):
     """
-    Object-level permission to only allow owners of an object to view or edit it.
+    Global level permission to only members of a thread to post a message to that thread
     """
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         has_permission = False
-        try:
-            tutor = Tutor.objects.get(user_id = request.user.pk)
-            print('tutor.pk', tutor.pk)
-        except:
-            pass
-        print('obj.user_id: ', obj.user_id)
-        print('request.user.pk: ', request.user.pk)
-        print('obj.tutor_id: ', obj.tutor_id)
-        # Test if user_id on the object is the as user_id of the request or that the tutor_id matches the tutor id of the user
-        try:
-            has_permission = obj.user_id == request.user.pk or obj.tutor_id == tutor.pk
-        except Exception as error:
-            print(error)
-            pass
-        # If the object is a user itself, test against the pk
+        request_user_id = int(request.user.pk)
+        message_thread_id = request.data['thread']
+        thread = Thread.objects.get(pk = message_thread_id)
+        message_user_id = int(request.data['user'])
+        message_tutor_id = int(request.data['tutor'])
+        tutor = Tutor.objects.get(pk = thread.tutor_id)
+        # Check that the user that sent the request as decoded in JWT is the same user as either the message user or message tutor
+        if request_user_id == thread.user_id or request_user_id == tutor.user_id:
+            has_permission = True
+            return has_permission
+        # Check if the thread has matches both user and sender
+        if thread.user_id == message_user_id and thread.tutor_id == message_tutor_id:
+            has_permission = True
+            return has_permission
+        
         return has_permission

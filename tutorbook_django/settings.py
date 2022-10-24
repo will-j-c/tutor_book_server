@@ -31,7 +31,9 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DJANGO_DEBUG') != 'False'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "https://tutorbook-app.herokuapp.com"
+]
 
 
 # Application definition
@@ -154,5 +156,5 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    env('CORS_ALLOWED_ORIGINS'),
 ]

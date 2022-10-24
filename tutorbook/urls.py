@@ -1,6 +1,6 @@
 from django.db import router
 from django.urls import path
-from .views import UserDetail, UserCreate, TutorList, TutorDetail, ReviewList, AssignmentList, AssignmentCreate, AssignmentDetail, AssignmentUpdateDestroy, ReviewCreate, ReviewUpdateDestroy, NewThread, ThreadDetail, MessageCreate
+from .views import *
 
 urlpatterns = [
     path('users', UserCreate.as_view(), name='user_list'),
@@ -10,14 +10,20 @@ urlpatterns = [
     path('reviews/<uuid:tutor_uuid>',
          ReviewCreate.as_view(), name='review_create'),
     path('reviews/<uuid:tutor_uuid>', ReviewList.as_view(), name='review_list'),
-    path('reviews/<int:pk>', ReviewUpdateDestroy.as_view(), name='review_update_destroy'),
+    path('reviews/<int:pk>', ReviewUpdateDestroy.as_view(),
+         name='review_update_destroy'),
     path('assignments/<uuid:assignment_uuid>',
          AssignmentUpdateDestroy.as_view(), name='assignment_update_destroy'),
     path('assignments/<uuid:assignment_uuid>',
          AssignmentDetail.as_view(), name='assignment_create'),
-    path('assignments/create', AssignmentCreate.as_view(), name='assignment_create'),
+    path('assignments/create', AssignmentCreate.as_view(),
+         name='assignment_create'),
     path('assignments', AssignmentList.as_view(), name='assignment_list'),
-    path('threads/<uuid:thread_uuid>', ThreadDetail.as_view(), name='thread_detail'),
-    path('messages/<uuid:thread_uuid>', MessageCreate.as_view(), name='message_create'),
+    path('threads/<uuid:thread_uuid>',
+         ThreadDetail.as_view(), name='thread_detail'),
+     path('messages/update/<int:pk>',
+         MessageUpdate.as_view(), name='message_update'),
+    path('messages/<uuid:thread_uuid>',
+         MessageCreate.as_view(), name='message_create'),
     path('messages/new', NewThread.as_view(), name='new_thread'),
 ]

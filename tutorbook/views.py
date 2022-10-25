@@ -1,13 +1,11 @@
 from .models import Review, User, Tutor, Assignment, Thread, Message
 from rest_framework import generics, views, status
-from .serializers import UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer, ThreadSerializer, MessageSerializer
+from .serializers import UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer, ThreadSerializer, MessageSerializer, UUIDUserSerializer
 from .authentication import FirebaseAuthentication
 from .permissions import IsOwner, IsThreadMember
 from rest_framework.response import Response
 
 # User views
-
-
 class UserCreate(generics.CreateAPIView):
     authentication_classes = []
     permission_classes = []
@@ -21,6 +19,13 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'user_uuid'
+
+class UserDetailEmail(generics.RetrieveUpdateDestroyAPIView):
+    authentication_classes = [FirebaseAuthentication]
+    permission_classes = [IsOwner]
+    queryset = User.objects.all()
+    serializer_class = UUIDUserSerializer
+    lookup_field = 'email'
 
 
 # Tutor views

@@ -57,6 +57,14 @@ class SkinnyUserSerializer(serializers.ModelSerializer):
                 'profile_img_url',
             ]
 
+class UUIDUserSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = [
+                'user_uuid',
+                'profile_img_url',
+            ]
+
 class TutorSerializer(serializers.ModelSerializer):
     user = SkinnyUserSerializer(read_only=True)
     locations = LocationSerializer(read_only=True, many=True)

@@ -4,6 +4,7 @@ from .serializers import UserSerializer, TutorSerializer, ReviewSerializer, Assi
 from .authentication import FirebaseAuthentication
 from .permissions import IsOwner, IsThreadMember
 from rest_framework.response import Response
+from django.db.models import Q
 
 # User views
 class UserCreate(generics.CreateAPIView):
@@ -104,7 +105,6 @@ class NewThread(views.APIView):
 
     def post(self, request):
         data = request.data
-        print(data['user'])
         user = User.objects.get(pk=data['user'])
         tutor = Tutor.objects.get(pk=data['tutor'])
         thread = Thread(tutor=tutor, user=user)
@@ -123,6 +123,24 @@ class ThreadDetail(generics.RetrieveAPIView):
     serializer_class = ThreadSerializer
     lookup_field = 'thread_uuid'
 
+class ThreadUserList(views.APIView):
+    authentication_classes = [FirebaseAuthentication]
+    permission_classes = []
+    def get(self, request):
+        print(request.user.pk)
+        user = request.user
+        tutor = None
+        try:
+            tutor = Tutor.objects.get(user=user)
+        except:
+            pass
+        if not tutor:
+            threads = Thread.objects.filter(user=user)
+            serialized_threads = ThreadSerializer(threads, many=True)
+            return Response(status=status.HTTP_200_OK, data={'user': 'u', 'threads': serialized_threads.data})
+        threads = Thread.objects.filter(tutor=tutor)
+        serialized_threads = ThreadSerializer(threads, many=True)
+        return Response(status=status.HTTP_200_OK, data={'user': 't', 'threads': serialized_threads.data})
 
 class MessageCreate(generics.CreateAPIView):
     authentication_classes = [FirebaseAuthentication]

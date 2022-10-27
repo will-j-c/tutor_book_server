@@ -22,9 +22,11 @@ urlpatterns = [
     path('assignments', AssignmentList.as_view(), name='assignment_list'),
     path('threads/<uuid:thread_uuid>',
          ThreadDetail.as_view(), name='thread_detail'),
-     path('messages/update/<int:pk>',
+    path('messages', ThreadUserList.as_view(), name='thread_user_list'),
+    path('messages/update/<int:pk>',
          MessageUpdate.as_view(), name='message_update'),
     path('messages/<uuid:thread_uuid>',
          MessageCreate.as_view(), name='message_create'),
     path('messages/new', NewThread.as_view(), name='new_thread'),
+
 ]

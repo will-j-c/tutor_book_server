@@ -89,6 +89,14 @@ class TutorSerializer(serializers.ModelSerializer):
             'average_rating'
         ]
 
+class SkinnyTutorSerializer(serializers.ModelSerializer):
+    user = SkinnyUserSerializer()
+    class Meta:
+        model = Tutor
+        fields = [
+            'user',
+        ]
+
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
@@ -102,6 +110,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         ]
 
 class AssignmentSerializer(serializers.ModelSerializer):
+    user = SkinnyUserSerializer(read_only=True)
     class Meta:
         model = Assignment
         fields = [
@@ -117,6 +126,8 @@ class AssignmentSerializer(serializers.ModelSerializer):
         ]
 
 class MessageSerializer(serializers.ModelSerializer):
+    user = SkinnyUserSerializer()
+    tutor = SkinnyTutorSerializer()
     class Meta:
         model = Message
         fields = [
@@ -132,6 +143,8 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class ThreadSerializer(serializers.ModelSerializer):
     messages = MessageSerializer(source='message_set', many=True)
+    user = SkinnyUserSerializer()
+    tutor = SkinnyTutorSerializer()
     class Meta:
         model = Thread
         fields = [
@@ -139,6 +152,7 @@ class ThreadSerializer(serializers.ModelSerializer):
             'tutor',
             'user',
             'created_at',
+            'updated_at',
             'has_unread',
             'thread_uuid',
             'messages'

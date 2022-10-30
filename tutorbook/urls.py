@@ -4,6 +4,7 @@ from .views import *
 
 urlpatterns = [
     path('users', UserCreate.as_view(), name='user_list'),
+    path('users/tutor-profile', TutorDetailFromUser.as_view(), name='user_tutor_detail'),
     path('users/<uuid:user_uuid>', UserDetail.as_view(), name='user_detail'),
     path('users/<str:email>', UserDetailEmail.as_view(), name='user_detail_email'),
     path('tutors', TutorList.as_view(), name='tutor_list'),

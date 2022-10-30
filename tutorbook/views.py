@@ -47,6 +47,13 @@ class TutorDetail(generics.RetrieveAPIView):
     serializer_class = TutorSerializer
     lookup_field = 'tutor_uuid'
 
+class TutorDetailFromUser(views.APIView):
+    permission_classes = []
+    def get(self, request):
+        print(request.user.pk)
+        tutor = Tutor.objects.get(user_id=request.user.pk)
+        serialized_tutor = TutorSerializer(tutor)
+        return Response(status=status.HTTP_200_OK, data=serialized_tutor.data)
 
 # Review views
 class ReviewList(generics.ListAPIView):

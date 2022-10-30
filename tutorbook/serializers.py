@@ -5,6 +5,7 @@ class UserTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_Type
         fields = [
+            'id',
             'type_name'
         ]
 
@@ -13,6 +14,7 @@ class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
         fields = [
+            'id',
             'subject_name'
         ]
 
@@ -21,6 +23,7 @@ class LevelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Level
         fields = [
+            'id',
             'level_name'
         ]
 
@@ -29,6 +32,7 @@ class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = [
+            'id',
             'location_name'
         ]
 

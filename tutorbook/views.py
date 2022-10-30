@@ -1,3 +1,4 @@
+from datetime import datetime
 from .models import Level, Location, Review, Subject, User, Tutor, Assignment, Thread, Message
 from rest_framework import generics, views, status
 from .serializers import CreateMessageSerializer, UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer, ThreadSerializer, MessageSerializer, UUIDUserSerializer
@@ -90,14 +91,19 @@ class ReviewUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
 class AssignmentList(generics.ListAPIView):
     authentication_classes = []
     permission_classes = []
-    queryset = Assignment.objects.filter(published=True)
+    queryset = Assignment.objects.filter(published=True).order_by('-published_at')
+    
     serializer_class = AssignmentSerializer
 
 
-class AssignmentCreate(generics.CreateAPIView):
+class AssignmentCreate(views.APIView):
     permission_classes = []
-    queryset = Assignment.objects.all()
-    serializer_class = AssignmentSerializer
+ 
+    def post (self, request):
+        user = request.user
+        assignment = Assignment(user=user, title=request.data['title'], description=request.data['description'], published=request.data['published'], published_at=datetime.now())
+        assignment.save()
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class AssignmentDetail(generics.RetrieveAPIView):
@@ -108,6 +114,7 @@ class AssignmentDetail(generics.RetrieveAPIView):
 
 
 class AssignmentUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsOwner]
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
     lookup_field = 'assignment_uuid'

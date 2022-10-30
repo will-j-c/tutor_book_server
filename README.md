@@ -1,6 +1,10 @@
 # TutorBook Server
 
-A Django backend serving json data to the TutorBook frontend. This was always going to be a challenge as Django was very enw to me when the project began. 
+A Django backend serving json data to the TutorBook frontend. This was always going to be a challenge as Django was very enw to me when the project began.
+
+## App Link
+
+https://tutorbook-app.herokuapp.com/
 
 ## Tech Stack
 
@@ -39,6 +43,7 @@ My initial deployment was done with 2 weeks to spare to iron out the inevitable 
 2. Implement a backend refresh with Firebase Admin for when a user changes their email.
 3. Migrate the DB to use the Firebase UID for each user instead of a DB generated UUID so that less API calls are needed.
 4. Implement a route that takes in search parameters so that a user can search assignments and tutors. 
+5. Implement Django Channels with Redis. This was dropped during this phase of the project due to time limitations.
 
 ## Initial Planned Routes
 

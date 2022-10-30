@@ -57,6 +57,20 @@ class IsOwner(permissions.BasePermission):
         except Exception as error:
             print(error)
 
+        try:
+            # Case 4: Check the user owns the assignment
+            print('Checking that requestor owns the assignment')
+            request_user_id = int(request.user.pk)
+            assignment_user_id = int(obj.user_id)
+            has_permission = request_user_id == assignment_user_id
+
+            if has_permission:
+                print('Assignment level permission granted')
+                return has_permission
+
+        except Exception as error:
+            print(error)
+
         print('Permission denied')
         return has_permission
 
@@ -69,23 +83,14 @@ class IsThreadMember(permissions.BasePermission):
     def has_permission(self, request, view):
         has_permission = False
         print('Checking global permission against thread')
-        print(request.data)
-        print(request.data['tutor'])
         request_user_id = int(request.user.pk)
-        print(74)
         message_thread_id = request.data['thread']
-        print(76)
         thread = Thread.objects.get(pk=message_thread_id)
-        print(78)
         message_user_id = int(request.data['user'])
-        print(80)
         message_tutor_id = int(request.data['tutor'])
-        print(82)
         tutor = Tutor.objects.get(pk=thread.tutor_id)
-        print(tutor)
         # Check that the user that sent the request as decoded in JWT is the same user as either the message user or message tutor
-        print(request_user_id == thread.user_id)
-        print(request_user_id == tutor.user_id)
+
         if request_user_id == thread.user_id or request_user_id == tutor.user_id:
             print('hitting line 89')
             has_permission = True

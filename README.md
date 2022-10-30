@@ -20,6 +20,9 @@ My initial deployment was done with 2 weeks to spare to iron out the inevitable 
 
 ## Issues Faced
 
+![One does not simply start coding in Django]([http://www.quickmeme.com/img/84/84bdee48fbd15efe214193d08da213e7a57fcacc993959b6e65fb2599538f1df.jpg])
+
+
 1. Django Rest Framework can be very opaque at times. If I was to start again using Django as a backend, I would write all the views from scratch as opposed to using generic views. It is much easier to debug and see what is going on when writing your own views.
 2. Django generally as an API backend serving JSON files only is a bit overkill. As a monolithic app, I can see its value, but as a backend only, it causes more problems than it solves. A more lightweight framework (such as Flask or Express) would be better for this kind of work.
 3. Django deployment on Heroku was absolutely hellish. The Heroku and Django documentation on deployment is sparse and inconsistent. Only after spending several hours fiddling with settings did I mange to get it to work. Deploying via a docker image would be better.

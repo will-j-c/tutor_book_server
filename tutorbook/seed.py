@@ -15,7 +15,7 @@ environ.Env.read_env('tutorbook_django/.env')
 
 # Establish local DB connection
 connection = psycopg2.connect(
-    database=env('DB_NAME'), user=env('DB_USER'), password=env('DB_PASSWORD'), host=env('HOST'), port=env('PORT')
+    database=env('DB_NAME'), user=env('DB_USER'), password=env('DB_PASSWORD'), host=env('DB_HOST'), port=env('DB_PORT')
 )
 cursor = connection.cursor()
 cursor.execute('''SELECT id FROM tutorbook_subject;''')
@@ -33,7 +33,7 @@ def generate_about_me_text(int):
         int = 1
     for i in range(int):
         para = lorem.paragraph()
-        text = f'{text}/n{para}'
+        text = f'{text}<br>{para}'
     return text
 
 
@@ -111,7 +111,7 @@ def create_assignment_record(pk, user_id):
     is_published = random.choice([True, False])
     is_filled = False
     published_at = None
-    number_of_paragraphs = random.randint(1, 3)
+    number_of_paragraphs = 1
     if is_published:
         published_at = str(datetime.datetime.now(datetime.timezone.utc))
         is_filled = random.choice([True, False])
@@ -183,6 +183,7 @@ def main():
     records = int(input())
     print('How many reviews would you like to generate?')
     reviews = int(input())
+    
     # Delete the current fixtures
     filelist = glob.glob('tutorbook/fixtures/*.json')
     for file in filelist:

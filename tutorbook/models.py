@@ -92,7 +92,8 @@ class Tutor(models.Model):
 
     @property
     def average_rating(self):
-        return Review.objects.filter(tutor=self).aggregate(Avg('rating'))
+        reviews = Review.objects.filter(tutor_id=self.id).aggregate(Avg('rating'))
+        return reviews
 
     def __str__(self):
         return str(self.tutor_uuid)
@@ -132,11 +133,10 @@ class Thread(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     thread_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     has_unread = models.BooleanField(default=True)
 
-    def __str__(self):
-        return self.pk
 
 
 class Message(models.Model):

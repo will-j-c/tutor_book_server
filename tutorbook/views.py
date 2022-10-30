@@ -1,4 +1,4 @@
-from .models import Review, User, Tutor, Assignment, Thread, Message
+from .models import Level, Location, Review, Subject, User, Tutor, Assignment, Thread, Message
 from rest_framework import generics, views, status
 from .serializers import CreateMessageSerializer, UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer, ThreadSerializer, MessageSerializer, UUIDUserSerializer
 from .authentication import FirebaseAuthentication
@@ -175,3 +175,14 @@ class MessageUpdate(generics.UpdateAPIView):
     permission_classes = [IsOwner]
     queryset = Message.objects.all()
     serializer_class = CreateMessageSerializer
+
+
+class StaticData(views.APIView):
+    authentication_classes = [FirebaseAuthentication]
+    permission_classes = []
+    def get(self, request):
+        subjects = Subject.objects.all().values()
+        locations = Location.objects.all().values()
+        levels = Level.objects.all().values()
+        print(subjects, locations, levels)
+        return Response(status=status.HTTP_200_OK, data={'levels': levels, 'subjects': subjects, 'locations': locations})

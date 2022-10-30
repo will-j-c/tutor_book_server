@@ -29,5 +29,6 @@ urlpatterns = [
     path('messages/<uuid:thread_uuid>',
          MessageCreate.as_view(), name='message_create'),
     path('messages/new', NewThread.as_view(), name='new_thread'),
+    path('static-data', StaticData.as_view(), name='static_data'),
 
 ]

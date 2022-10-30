@@ -1,12 +1,14 @@
 from .models import Review, User, Tutor, Assignment, Thread, Message
 from rest_framework import generics, views, status
-from .serializers import UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer, ThreadSerializer, MessageSerializer, UUIDUserSerializer
+from .serializers import CreateMessageSerializer, UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer, ThreadSerializer, MessageSerializer, UUIDUserSerializer
 from .authentication import FirebaseAuthentication
 from .permissions import IsOwner, IsThreadMember
 from rest_framework.response import Response
 from django.db.models import Q
 
 # User views
+
+
 class UserCreate(generics.CreateAPIView):
     authentication_classes = []
     permission_classes = []
@@ -20,6 +22,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'user_uuid'
+
 
 class UserDetailEmail(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [FirebaseAuthentication]
@@ -49,6 +52,7 @@ class TutorDetail(generics.RetrieveAPIView):
 class ReviewList(generics.ListAPIView):
     permission_classes = []
     serializer_class = ReviewSerializer
+    pagination_class = None
 
     def get_queryset(self):
         tutor_uuid = self.kwargs['tutor_uuid']
@@ -56,10 +60,17 @@ class ReviewList(generics.ListAPIView):
         return Review.objects.filter(tutor=tutor['id'])
 
 
-class ReviewCreate(generics.CreateAPIView):
+class ReviewCreate(views.APIView):
     permission_classes = []
-    queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
+
+    def post(self, request, *args, **kwargs):
+        tutor_uuid = kwargs['tutor_uuid']
+        user_uuid = request.data['user']
+        tutor = Tutor.objects.get(tutor_uuid=tutor_uuid)
+        user = User.objects.get(user_uuid=user_uuid)
+        review = Review(user=user, tutor=tutor, rating=request.data['rating'], review_text=request.data['review_text'])
+        review.save()
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class ReviewUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
@@ -123,9 +134,11 @@ class ThreadDetail(generics.RetrieveAPIView):
     serializer_class = ThreadSerializer
     lookup_field = 'thread_uuid'
 
+
 class ThreadUserList(views.APIView):
     authentication_classes = [FirebaseAuthentication]
     permission_classes = []
+
     def get(self, request):
         print(request.user.pk)
         user = request.user
@@ -142,14 +155,16 @@ class ThreadUserList(views.APIView):
         serialized_threads = ThreadSerializer(threads, many=True)
         return Response(status=status.HTTP_200_OK, data={'user': 't', 'threads': serialized_threads.data})
 
+
 class MessageCreate(generics.CreateAPIView):
     authentication_classes = [FirebaseAuthentication]
     permission_classes = [IsThreadMember]
     queryset = Message.objects.all()
-    serializer_class = MessageSerializer
+    serializer_class = CreateMessageSerializer
+
 
 class MessageUpdate(generics.UpdateAPIView):
     authentication_classes = [FirebaseAuthentication]
     permission_classes = [IsOwner]
     queryset = Message.objects.all()
-    serializer_class = MessageSerializer
+    serializer_class = CreateMessageSerializer

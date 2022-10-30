@@ -183,6 +183,7 @@ def main():
     records = int(input())
     print('How many reviews would you like to generate?')
     reviews = int(input())
+    
     # Delete the current fixtures
     filelist = glob.glob('tutorbook/fixtures/*.json')
     for file in filelist:

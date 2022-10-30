@@ -55,6 +55,7 @@ class SkinnyUserSerializer(serializers.ModelSerializer):
             fields = [
                 'first_name',
                 'profile_img_url',
+                'id'
             ]
 
 class UUIDUserSerializer(serializers.ModelSerializer):
@@ -62,7 +63,7 @@ class UUIDUserSerializer(serializers.ModelSerializer):
             model = User
             fields = [
                 'user_uuid',
-                'profile_img_url',
+                'profile_img_url'
             ]
 
 class TutorSerializer(serializers.ModelSerializer):
@@ -95,6 +96,7 @@ class SkinnyTutorSerializer(serializers.ModelSerializer):
         model = Tutor
         fields = [
             'user',
+            'id'
         ]
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -126,8 +128,8 @@ class AssignmentSerializer(serializers.ModelSerializer):
         ]
 
 class MessageSerializer(serializers.ModelSerializer):
-    user = SkinnyUserSerializer()
-    tutor = SkinnyTutorSerializer()
+    user = SkinnyUserSerializer(read_only=True)
+    tutor = SkinnyTutorSerializer(read_only=True)
     class Meta:
         model = Message
         fields = [
@@ -139,6 +141,17 @@ class MessageSerializer(serializers.ModelSerializer):
             'thread',
             'content',
             'is_read',
+        ]
+
+class CreateMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = [
+            'tutor',
+            'user',
+            'sender',
+            'thread',
+            'content',
         ]
 
 class ThreadSerializer(serializers.ModelSerializer):

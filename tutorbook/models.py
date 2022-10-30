@@ -92,7 +92,8 @@ class Tutor(models.Model):
 
     @property
     def average_rating(self):
-        return Review.objects.filter(tutor=self).aggregate(Avg('rating'))
+        reviews = Review.objects.filter(tutor_id=self.id).aggregate(Avg('rating'))
+        return reviews
 
     def __str__(self):
         return str(self.tutor_uuid)

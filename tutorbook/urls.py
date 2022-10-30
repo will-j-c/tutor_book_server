@@ -10,7 +10,7 @@ urlpatterns = [
     path('tutors/<uuid:tutor_uuid>', TutorDetail.as_view(), name='tutor_detail'),
     path('reviews/<uuid:tutor_uuid>',
          ReviewCreate.as_view(), name='review_create'),
-    path('reviews/<uuid:tutor_uuid>', ReviewList.as_view(), name='review_list'),
+    path('reviews/<uuid:tutor_uuid>/list', ReviewList.as_view(), name='review_list'),
     path('reviews/<int:pk>', ReviewUpdateDestroy.as_view(),
          name='review_update_destroy'),
     path('assignments/<uuid:assignment_uuid>',

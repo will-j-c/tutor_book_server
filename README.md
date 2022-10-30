@@ -20,7 +20,7 @@ My initial deployment was done with 2 weeks to spare to iron out the inevitable 
 
 ## Issues Faced
 
-![One does not simply start coding in Django]([http://www.quickmeme.com/img/84/84bdee48fbd15efe214193d08da213e7a57fcacc993959b6e65fb2599538f1df.jpg])
+![One does not simply start coding in Django](http://www.quickmeme.com/img/84/84bdee48fbd15efe214193d08da213e7a57fcacc993959b6e65fb2599538f1df.jpg)
 
 
 1. Django Rest Framework can be very opaque at times. If I was to start again using Django as a backend, I would write all the views from scratch as opposed to using generic views. It is much easier to debug and see what is going on when writing your own views.

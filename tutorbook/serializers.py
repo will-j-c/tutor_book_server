@@ -59,7 +59,8 @@ class SkinnyUserSerializer(serializers.ModelSerializer):
             fields = [
                 'first_name',
                 'profile_img_url',
-                'id'
+                'id',
+                'user_uuid'
             ]
 
 class UUIDUserSerializer(serializers.ModelSerializer):

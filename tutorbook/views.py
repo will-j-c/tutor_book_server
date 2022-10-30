@@ -114,6 +114,7 @@ class AssignmentDetail(generics.RetrieveAPIView):
 
 
 class AssignmentUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsOwner]
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
     lookup_field = 'assignment_uuid'

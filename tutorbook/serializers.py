@@ -68,7 +68,8 @@ class UUIDUserSerializer(serializers.ModelSerializer):
             model = User
             fields = [
                 'user_uuid',
-                'profile_img_url'
+                'profile_img_url',
+                'user_type'
             ]
 
 class TutorSerializer(serializers.ModelSerializer):
@@ -92,7 +93,8 @@ class TutorSerializer(serializers.ModelSerializer):
             'levels',
             'subjects',
             'tutor_uuid',
-            'average_rating'
+            'average_rating',
+            'id'
         ]
 
 class SkinnyTutorSerializer(serializers.ModelSerializer):

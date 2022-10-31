@@ -145,10 +145,12 @@ class NewThread(views.APIView):
             tutor_user = User.objects.get(user_uuid=data['tutor'])
             tutor = Tutor.objects.get(user_id=tutor_user.pk)
 
+        if data['source'] == 'tutor':
+            print(data)
+            user = User.objects.get(user_uuid=data['user'])
+            tutor = Tutor.objects.get(pk=data['tutor'])
         # Check if a thread already exists between the 2 users
         thread = Thread.objects.filter(Q(user=user), Q(tutor=tutor))
-        print(thread)
-        print(thread.exists)
         if thread.exists():
             # Create the message
             message = Message(tutor=tutor, user=user, thread=thread[0],
@@ -190,7 +192,7 @@ class ThreadUserList(views.APIView):
             threads = Thread.objects.filter(user=user)
             serialized_threads = ThreadSerializer(threads, many=True)
             return Response(status=status.HTTP_200_OK, data={'user': 'u', 'threads': serialized_threads.data})
-        threads = Thread.objects.filter(tutor=tutor).order_by('-updated_at')
+        threads = Thread.objects.filter(tutor=tutor).order_by('updated_at')
         serialized_threads = ThreadSerializer(threads, many=True)
         return Response(status=status.HTTP_200_OK, data={'user': 't', 'threads': serialized_threads.data})
 

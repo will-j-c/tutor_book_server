@@ -48,8 +48,10 @@ class TutorDetail(generics.RetrieveAPIView):
     serializer_class = TutorSerializer
     lookup_field = 'tutor_uuid'
 
+
 class TutorDetailFromUser(views.APIView):
     permission_classes = []
+
     def get(self, request):
         print(request.user.pk)
         tutor = Tutor.objects.get(user_id=request.user.pk)
@@ -57,6 +59,8 @@ class TutorDetailFromUser(views.APIView):
         return Response(status=status.HTTP_200_OK, data=serialized_tutor.data)
 
 # Review views
+
+
 class ReviewList(generics.ListAPIView):
     permission_classes = []
     serializer_class = ReviewSerializer
@@ -76,7 +80,8 @@ class ReviewCreate(views.APIView):
         user_uuid = request.data['user']
         tutor = Tutor.objects.get(tutor_uuid=tutor_uuid)
         user = User.objects.get(user_uuid=user_uuid)
-        review = Review(user=user, tutor=tutor, rating=request.data['rating'], review_text=request.data['review_text'])
+        review = Review(user=user, tutor=tutor,
+                        rating=request.data['rating'], review_text=request.data['review_text'])
         review.save()
         return Response(status=status.HTTP_201_CREATED)
 
@@ -91,17 +96,19 @@ class ReviewUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
 class AssignmentList(generics.ListAPIView):
     authentication_classes = []
     permission_classes = []
-    queryset = Assignment.objects.filter(published=True).order_by('-published_at')
-    
+    queryset = Assignment.objects.filter(
+        published=True).order_by('-published_at')
+
     serializer_class = AssignmentSerializer
 
 
 class AssignmentCreate(views.APIView):
     permission_classes = []
- 
-    def post (self, request):
+
+    def post(self, request):
         user = request.user
-        assignment = Assignment(user=user, title=request.data['title'], description=request.data['description'], published=request.data['published'], published_at=datetime.now())
+        assignment = Assignment(user=user, title=request.data['title'], description=request.data[
+                                'description'], published=request.data['published'], published_at=datetime.now())
         assignment.save()
         return Response(status=status.HTTP_201_CREATED)
 
@@ -129,16 +136,34 @@ class NewThread(views.APIView):
     permission_classes = []
 
     def post(self, request):
+        user = None
+        tutor = None
+        # Check the source
         data = request.data
-        user = User.objects.get(pk=data['user'])
-        tutor = Tutor.objects.get(pk=data['tutor'])
+        if data['source'] == 'assignment':
+            user = User.objects.get(pk=data['user'])
+            tutor_user = User.objects.get(user_uuid=data['tutor'])
+            tutor = Tutor.objects.get(user_id=tutor_user.pk)
+
+        # Check if a thread already exists between the 2 users
+        thread = Thread.objects.filter(Q(user=user), Q(tutor=tutor))
+        print(thread)
+        print(thread.exists)
+        if thread.exists():
+            # Create the message
+            message = Message(tutor=tutor, user=user, thread=thread[0],
+                              content=data['content'], sender=data['sender'])
+            message.save()
+            return Response(status=status.HTTP_201_CREATED)
+
+        # Else create the thread and save the message
         thread = Thread(tutor=tutor, user=user)
         thread.save()
         message = Message(tutor=tutor, user=user, thread=thread,
                           content=data['content'], sender=data['sender'])
         message.save()
-        serialized_thread = ThreadSerializer(thread)
-        return Response(status=status.HTTP_201_CREATED, data=serialized_thread.data)
+        
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class ThreadDetail(generics.RetrieveAPIView):
@@ -165,7 +190,7 @@ class ThreadUserList(views.APIView):
             threads = Thread.objects.filter(user=user)
             serialized_threads = ThreadSerializer(threads, many=True)
             return Response(status=status.HTTP_200_OK, data={'user': 'u', 'threads': serialized_threads.data})
-        threads = Thread.objects.filter(tutor=tutor)
+        threads = Thread.objects.filter(tutor=tutor).order_by('-updated_at')
         serialized_threads = ThreadSerializer(threads, many=True)
         return Response(status=status.HTTP_200_OK, data={'user': 't', 'threads': serialized_threads.data})
 
@@ -187,6 +212,7 @@ class MessageUpdate(generics.UpdateAPIView):
 class StaticData(views.APIView):
     authentication_classes = [FirebaseAuthentication]
     permission_classes = []
+
     def get(self, request):
         subjects = Subject.objects.all().values()
         locations = Location.objects.all().values()

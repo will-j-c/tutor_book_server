@@ -153,9 +153,10 @@ class NewThread(views.APIView):
             print(data)
             user = User.objects.get(user_uuid=data['user'])
             tutor = Tutor.objects.get(pk=data['tutor'])
+            
         # Check if a thread already exists between the 2 users
         thread = Thread.objects.filter(Q(user=user), Q(tutor=tutor))
-        print(thread.exists)
+        print(thread.exists())
         print(thread.values())
         if thread.exists():
             # Create the message

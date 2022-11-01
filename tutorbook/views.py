@@ -157,7 +157,7 @@ class NewThread(views.APIView):
         # Check if a thread already exists between the 2 users
         thread = Thread.objects.filter(Q(user=user), Q(tutor=tutor))
         print(thread.exists())
-        print(thread.values())
+        
         if thread.exists():
             # Create the message
             message = Message(tutor=tutor, user=user, thread=thread[0],

@@ -152,6 +152,8 @@ class NewThread(views.APIView):
             tutor = Tutor.objects.get(pk=data['tutor'])
         # Check if a thread already exists between the 2 users
         thread = Thread.objects.filter(Q(user=user), Q(tutor=tutor))
+        print(thread.exists)
+        print(thread.values())
         if thread.exists():
             # Create the message
             message = Message(tutor=tutor, user=user, thread=thread[0],
@@ -165,7 +167,7 @@ class NewThread(views.APIView):
         message = Message(tutor=tutor, user=user, thread=thread,
                           content=data['content'], sender=data['sender'])
         message.save()
-        
+        print('line 170')
         return Response(status=status.HTTP_201_CREATED)
 
 

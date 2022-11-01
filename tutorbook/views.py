@@ -167,7 +167,7 @@ class NewThread(views.APIView):
 
         # Else create the thread and save the message
         print('line 169')
-        thread = Thread(tutor=tutor, user=user)
+        thread = Thread(tutor=tutor, user=user, has_unread=True)
         print(thread)
         thread.save()
         message = Message(tutor=tutor, user=user, thread=thread,

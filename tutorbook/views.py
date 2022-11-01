@@ -166,6 +166,7 @@ class NewThread(views.APIView):
             return Response(status=status.HTTP_201_CREATED)
 
         # Else create the thread and save the message
+        print('line 169')
         thread = Thread(tutor=tutor, user=user)
         print(thread)
         thread.save()

@@ -143,8 +143,11 @@ class NewThread(views.APIView):
         print(data)
         if data['source'] == 'assignment':
             user = User.objects.get(pk=data['user'])
+            print(user)
             tutor_user = User.objects.get(user_uuid=data['tutor'])
+            print(tutor_user)
             tutor = Tutor.objects.get(user_id=tutor_user.pk)
+            print(tutor)
 
         if data['source'] == 'tutor':
             print(data)

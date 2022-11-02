@@ -51,8 +51,8 @@ class User(models.Model):
             super().save(*args, **kwargs)
             tutor = Tutor.objects.create(user=self)
             tutor.save()
-            return
-        super().save(*args, **kwargs)
+        else:
+            super().save(*args, **kwargs)
 
 
 class Location(models.Model):

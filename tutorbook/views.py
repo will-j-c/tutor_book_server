@@ -32,6 +32,12 @@ class UserDetailEmail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UUIDUserSerializer
     lookup_field = 'email'
 
+class UserDelete(generics.DestroyAPIView):
+    authentication_classes = [FirebaseAuthentication]
+    permission_classes = [IsOwner]
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = 'user_uuid'
 
 # Tutor views
 class TutorList(generics.ListAPIView):
@@ -63,6 +69,8 @@ class TutorUpdate(generics.UpdateAPIView):
     queryset = Tutor.objects.all()
     serializer_class = TutorUpdateSerializer
     lookup_field = 'tutor_uuid'
+
+
 
 # Review views
 
@@ -146,7 +154,6 @@ class NewThread(views.APIView):
         tutor = None
         # Check the source
         data = request.data
-        print(data)
         if data['source'] == 'assignment':
             user = User.objects.get(pk=data['user'])
             tutor_user = User.objects.get(user_uuid=data['tutor'])
@@ -172,7 +179,6 @@ class NewThread(views.APIView):
         message = Message(tutor=tutor, user=user, thread=thread,
                           content=data['content'], sender=data['sender'])
         message.save()
-        print('line 170')
         return Response(status=status.HTTP_201_CREATED)
 
 
@@ -189,7 +195,6 @@ class ThreadUserList(views.APIView):
     permission_classes = []
 
     def get(self, request):
-        print(request.user.pk)
         user = request.user
         tutor = None
         try:

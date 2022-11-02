@@ -9,6 +9,7 @@ urlpatterns = [
     path('users/<str:email>', UserDetailEmail.as_view(), name='user_detail_email'),
     path('tutors', TutorList.as_view(), name='tutor_list'),
     path('tutors/<uuid:tutor_uuid>', TutorDetail.as_view(), name='tutor_detail'),
+    path('tutors/edit/<uuid:tutor_uuid>', TutorUpdate.as_view(), name='tutor_update'),
     path('reviews/<uuid:tutor_uuid>',
          ReviewCreate.as_view(), name='review_create'),
     path('reviews/<uuid:tutor_uuid>/list', ReviewList.as_view(), name='review_list'),

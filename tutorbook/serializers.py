@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 
+
 class UserTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_Type
@@ -53,30 +54,33 @@ class UserSerializer(serializers.ModelSerializer):
             'email_is_verified',
         ]
 
+
 class SkinnyUserSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = User
-            fields = [
-                'first_name',
-                'profile_img_url',
-                'id',
-                'user_uuid'
-            ]
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'profile_img_url',
+            'id',
+            'user_uuid'
+        ]
+
 
 class UUIDUserSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = User
-            fields = [
-                'user_uuid',
-                'profile_img_url',
-                'user_type'
-            ]
+    class Meta:
+        model = User
+        fields = [
+            'user_uuid',
+            'profile_img_url',
+            'user_type'
+        ]
+
 
 class TutorSerializer(serializers.ModelSerializer):
     user = SkinnyUserSerializer(read_only=True)
-    locations = LocationSerializer(read_only=True, many=True)
-    levels = LevelSerializer(read_only=True, many=True)
-    subjects = SubjectSerializer(read_only=True, many=True)
+    locations = LocationSerializer(many=True)
+    levels = LevelSerializer(many=True)
+    subjects = SubjectSerializer(many=True)
 
     class Meta:
         model = Tutor
@@ -97,14 +101,38 @@ class TutorSerializer(serializers.ModelSerializer):
             'id'
         ]
 
+
+class TutorUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tutor
+        fields = [
+            'user',
+            'published',
+            'looking_for_assignment',
+            'about_me',
+            'created_at',
+            'updated_at',
+            'published_at',
+            'subscription_expires_at',
+            'locations',
+            'levels',
+            'subjects',
+            'tutor_uuid',
+            'average_rating',
+            'id'
+        ]
+
+
 class SkinnyTutorSerializer(serializers.ModelSerializer):
     user = SkinnyUserSerializer()
+
     class Meta:
         model = Tutor
         fields = [
             'user',
             'id'
         ]
+
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
@@ -118,8 +146,10 @@ class ReviewSerializer(serializers.ModelSerializer):
             'review_text'
         ]
 
+
 class AssignmentSerializer(serializers.ModelSerializer):
     user = SkinnyUserSerializer(read_only=True)
+
     class Meta:
         model = Assignment
         fields = [
@@ -134,9 +164,11 @@ class AssignmentSerializer(serializers.ModelSerializer):
             'assignment_uuid',
         ]
 
+
 class MessageSerializer(serializers.ModelSerializer):
     user = SkinnyUserSerializer(read_only=True)
     tutor = SkinnyTutorSerializer(read_only=True)
+
     class Meta:
         model = Message
         fields = [
@@ -150,6 +182,7 @@ class MessageSerializer(serializers.ModelSerializer):
             'is_read',
         ]
 
+
 class CreateMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
@@ -161,10 +194,12 @@ class CreateMessageSerializer(serializers.ModelSerializer):
             'content',
         ]
 
+
 class ThreadSerializer(serializers.ModelSerializer):
     messages = MessageSerializer(source='message_set', many=True)
     user = SkinnyUserSerializer()
     tutor = SkinnyTutorSerializer()
+
     class Meta:
         model = Thread
         fields = [

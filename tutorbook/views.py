@@ -1,7 +1,7 @@
 from datetime import datetime
 from .models import Level, Location, Review, Subject, User, Tutor, Assignment, Thread, Message
 from rest_framework import generics, views, status
-from .serializers import CreateMessageSerializer, UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer, ThreadSerializer, MessageSerializer, UUIDUserSerializer
+from .serializers import CreateMessageSerializer, UserSerializer, TutorSerializer, ReviewSerializer, AssignmentSerializer, ThreadSerializer, MessageSerializer, UUIDUserSerializer, TutorUpdateSerializer
 from .authentication import FirebaseAuthentication
 from .permissions import IsOwner, IsThreadMember
 from rest_framework.response import Response
@@ -32,6 +32,12 @@ class UserDetailEmail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UUIDUserSerializer
     lookup_field = 'email'
 
+class UserDelete(generics.DestroyAPIView):
+    authentication_classes = [FirebaseAuthentication]
+    permission_classes = [IsOwner]
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = 'user_uuid'
 
 # Tutor views
 class TutorList(generics.ListAPIView):
@@ -53,10 +59,18 @@ class TutorDetailFromUser(views.APIView):
     permission_classes = []
 
     def get(self, request):
-        print(request.user.pk)
         tutor = Tutor.objects.get(user_id=request.user.pk)
         serialized_tutor = TutorSerializer(tutor)
         return Response(status=status.HTTP_200_OK, data=serialized_tutor.data)
+
+class TutorUpdate(generics.UpdateAPIView):
+    authentication_classes = [FirebaseAuthentication]
+    permission_classes = [IsOwner]
+    queryset = Tutor.objects.all()
+    serializer_class = TutorUpdateSerializer
+    lookup_field = 'tutor_uuid'
+
+
 
 # Review views
 
@@ -140,23 +154,17 @@ class NewThread(views.APIView):
         tutor = None
         # Check the source
         data = request.data
-        print(data)
         if data['source'] == 'assignment':
             user = User.objects.get(pk=data['user'])
-            print(user)
             tutor_user = User.objects.get(user_uuid=data['tutor'])
-            print(tutor_user)
             tutor = Tutor.objects.get(user_id=tutor_user.pk)
-            print(tutor)
 
         if data['source'] == 'tutor':
-            print(data)
             user = User.objects.get(user_uuid=data['user'])
             tutor = Tutor.objects.get(pk=data['tutor'])
 
         # Check if a thread already exists between the 2 users
         thread = Thread.objects.filter(Q(user=user), Q(tutor=tutor))
-        print(thread.exists())
         
         if thread.exists():
             # Create the message
@@ -166,17 +174,11 @@ class NewThread(views.APIView):
             return Response(status=status.HTTP_201_CREATED)
 
         # Else create the thread and save the message
-        print('line 169')
-        print(tutor)
-        print(user)
         thread = Thread(tutor=tutor, user=user, has_unread=True)
-        print(thread)
         thread.save()
         message = Message(tutor=tutor, user=user, thread=thread,
                           content=data['content'], sender=data['sender'])
-        print(message)
         message.save()
-        print('line 170')
         return Response(status=status.HTTP_201_CREATED)
 
 
@@ -193,7 +195,6 @@ class ThreadUserList(views.APIView):
     permission_classes = []
 
     def get(self, request):
-        print(request.user.pk)
         user = request.user
         tutor = None
         try:
@@ -231,5 +232,4 @@ class StaticData(views.APIView):
         subjects = Subject.objects.all().values()
         locations = Location.objects.all().values()
         levels = Level.objects.all().values()
-        print(subjects, locations, levels)
         return Response(status=status.HTTP_200_OK, data={'levels': levels, 'subjects': subjects, 'locations': locations})
